@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\Product;
 
@@ -12,12 +12,8 @@ class ProductController extends Controller
      */
     public function getProducts()
     {
-        try {
-            $products = Product::all();
-            return response()->json(["success" => true, "data" => $products], 200);
-        } catch (\Exception $e) {
-            return response()->json(["success" => false, "message" => "Failed to retrieve products", "error" => $e->getMessage()], 500);
-        }
+        $products=Product::with('category')->get(); // Fetch products with their categories
+        return response()->json($products);
     }
 
     /**
@@ -25,22 +21,27 @@ class ProductController extends Controller
      */
     public function createProduct(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'required|string|max:255',
-                'category_id' => 'nullable|exists:categories,id',  // This is fine
-                'pricing' => 'required|numeric|min:0',
-                'description' => 'nullable|string',
-                'images' => 'required|array',  // Change to accept an array
-                // 'images.*' => 'url'  // Each image must be a valid URL
-            ]);
-
-            $product = Product::create($validatedData);
-
-            return response()->json(["success" => true, "data" => $product], 201);
-        } catch (\Exception $e) {
-            return response()->json(["success" => false, "message" => "Failed to create product", "error" => $e->getMessage()], 500);
+        $imagePaths = [];
+        if($request->hasFile('images')) {
+            foreach($request->file('images') as $image) {
+                $imagePaths[] = $image->store('images', 'public');
+                $path = $image->store('images', 'public');
+            }
         }
+        $product= Product::create([
+            'name' => $request->name,
+            'category_id' => $request->category_id,
+            'pricing' => $request->pricing,
+            'description' => $request->description,
+            'images' => $imagePaths
+        ]);
+        if(!$product) {
+            return response()->json(["message" => "Product not created"], 400);
+        }
+        return response()->json([
+            "message" => "Product created successfully",
+            "product" => $product
+        ], 201);
     }
 
     /**
@@ -48,16 +49,21 @@ class ProductController extends Controller
      */
     public function getProduct($categoryId)
     {
-        return ["message" => "Getting 1 category based on given categoryId"]; // Improved wording
-        // return $category=Category::where('active',1)->first();
+        $product = Product::with('category')->find($categoryId); // Fetch product with its category
+        return response()->json($product);
     }
 
     /**
      * PATCH /api/products/{productId}
      */
-    public function updateProduct($categoryId)
+    public function updateProduct(Request $request,$categoryId)
     {
-        return ["message" => "Updating 1 category based on given categoryId"]; // Improved wording
+        $product = Product::find($categoryId);
+        $product ->update($request->all());
+        return response()->json([
+            "message" => "Product updated successfully",
+            "product" => $product->fresh()
+        ]);
     }
 
     /**
@@ -65,7 +71,14 @@ class ProductController extends Controller
      */
     public function deleteProduct($categoryId) // Corrected method name
     {
-        return ["message" => "Deleting 1 category based on given categoryId"]; // Corrected spelling and wording
+        $product = Product::find($categoryId);
+        if($product->images){
+            foreach($product->images as $image){
+                Storage::disk('public')->delete($image);
+            }
+        }
+        $product->delete();
+        return response()->json(["message" => "Product deleted successfully"]);
     }
 
     /**

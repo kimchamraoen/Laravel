@@ -7,45 +7,65 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    /**
-     * GET /api/categories
-     */
-    public function getCategories()
-    {
-        return ["message" => "Getting 1 new category"];
-        // return Category::all();
+      // --- Get /api/categories
+      public function getCategories(){
+        $categories = Category::all(); // Fetch only the categories without any relations
+    
+        return response()->json($categories);
+    }
+    // --- Post /api/categories
+    public function createCategory(Request $request){
+
+        $category = Category::create(['name' => $request->name]);
+
+        return response()->json([
+        "message" => "Category created successfully",
+        "category" => $category
+        ], 201);
+    }   
+
+            // --- Get /api/categories/{categoryId}
+    public function getCategory($categoryId){
+        // Fetch the category by ID or return a 404 if not found
+        $category = Category::find($categoryId);
+
+        if (!$category) {
+            return response()->json(["message" => "Category not found"], 404);
+        }
+
+        return response()->json($category);
     }
 
-    /**
-     * POST /api/categories
-     */
-    public function createCategory()
-    {
-        return ["message" => "Creating 1 new category"]; // Corrected spelling
+    // --- Patch /api/categories/{categoryId}
+    public function updateCategory(Request $request, $categoryId){
+        // Fetch the category by ID or return a 404 if not found
+        $category = Category::find($categoryId);
+
+        if (!$category) {
+            return response()->json(["message" => "Category not found"], 404);
+        }
+
+        // Update the category
+        $category->update(['name' => $request->name]);
+
+        return response()->json([
+            "message" => "Category updated successfully",
+            "category" => $category
+        ]);
     }
 
-    /**
-     * GET /api/categories/{categoryId}
-     */
-    public function getCategory($categoryId)
-    {
-        return ["message" => "Getting 1 category based on given categoryId"]; // Improved wording
-        // return $category=Category::where('active',1)->first();
-    }
+    // --- Delete /api/categories/{categoryId}
+    public function deleteCategory($categoryId){
+        // Fetch the category by ID or return a 404 if not found
+        $category = Category::find($categoryId);
 
-    /**
-     * PATCH /api/categories/{categoryId}
-     */
-    public function updateCategory($categoryId)
-    {
-        return ["message" => "Updating 1 category based on given categoryId"]; // Improved wording
-    }
+        if (!$category) {
+            return response()->json(["message" => "Category not found"], 404);
+        }
 
-    /**
-     * DELETE /api/categories/{categoryId}
-     */
-    public function deleteCategory($categoryId) // Corrected method name
-    {
-        return ["message" => "Deleting 1 category based on given categoryId"]; // Corrected spelling and wording
+        // Delete the category
+        $category->delete();
+
+        return response()->json(["message" => "Category deleted successfully"]);
     }
 }
