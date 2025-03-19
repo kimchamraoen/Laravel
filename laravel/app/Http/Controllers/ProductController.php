@@ -1,91 +1,83 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Storage;
+
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Product;
 
 class ProductController extends Controller
 {
-    /**
-     * GET /api/products
-     */
-    public function getProducts()
+    // Get all products - GET /api/products
+    public function getProducts(): JsonResponse
     {
-        $products=Product::with('category')->get(); // Fetch products with their categories
-        return response()->json($products);
+        $products = Product::all();
+
+        return response()->json([
+            "message" => "List of products",
+            "data" => $products
+        ], 200);
     }
 
-    /**
-     * POST /api/products
-     */
-    public function createProduct(Request $request)
+    // Create a new product - POST /api/products
+    public function createProduct(Request $request): JsonResponse
     {
-        $imagePaths = [];
-        if($request->hasFile('images')) {
-            foreach($request->file('images') as $image) {
-                $imagePaths[] = $image->store('images', 'public');
-                $path = $image->store('images', 'public');
-            }
-        }
-        $product= Product::create([
-            'name' => $request->name,
-            'category_id' => $request->category_id,
-            'pricing' => $request->pricing,
-            'description' => $request->description,
-            'images' => $imagePaths
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string',
+            'images' => 'nullable|json',
         ]);
-        if(!$product) {
-            return response()->json(["message" => "Product not created"], 400);
-        }
+
+        $product = Product::create($validated);
+
         return response()->json([
             "message" => "Product created successfully",
-            "product" => $product
+            "data" => $product
         ], 201);
     }
 
-    /**
-     * GET /api/products/{productId}
-     */
-    public function getProduct($categoryId)
+    // Get a specific product - GET /api/products/{productId}
+    public function getProduct($productId): JsonResponse
     {
-        $product = Product::with('category')->find($categoryId); // Fetch product with its category
-        return response()->json($product);
+        $product = Product::findOrFail($productId);
+
+        return response()->json([
+            "message" => "Product retrieved successfully",
+            "data" => $product
+        ], 200);
     }
 
-    /**
-     * PATCH /api/products/{productId}
-     */
-    public function updateProduct(Request $request,$categoryId)
+    // Update a product - PATCH /api/products/{productId}
+    public function updateProduct(Request $request, $productId): JsonResponse
     {
-        $product = Product::find($categoryId);
-        $product ->update($request->all());
+        $product = Product::findOrFail($productId);
+
+        $validated = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'price' => 'sometimes|numeric|min:0',
+            'category_id' => 'sometimes|exists:categories,id',
+            'description' => 'nullable|string',
+            'images' => 'nullable|json',
+        ]);
+
+        $product->update($validated);
+
         return response()->json([
             "message" => "Product updated successfully",
-            "product" => $product->fresh()
-        ]);
+            "data" => $product
+        ], 200);
     }
 
-    /**
-     * DELETE /api/products/{productId}
-     */
-    public function deleteProduct($categoryId) // Corrected method name
+    // Delete a product - DELETE /api/products/{productId}
+    public function deleteProduct($productId): JsonResponse
     {
-        $product = Product::find($categoryId);
-        if($product->images){
-            foreach($product->images as $image){
-                Storage::disk('public')->delete($image);
-            }
-        }
+        $product = Product::findOrFail($productId);
         $product->delete();
-        return response()->json(["message" => "Product deleted successfully"]);
-    }
 
-    /**
-     * Get /api/categories/{categoryId}/products
-     */
-    public function getProducstId($categoryId) // Corrected method name
-    {
-        return ["message" => "Deleting 1 category based on given categoryId"]; // Corrected spelling and wording
+        return response()->json([
+            "message" => "Product deleted successfully"
+        ], 200);
     }
 }

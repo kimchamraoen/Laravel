@@ -14,15 +14,27 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
     // --- Post /api/categories
-    public function createCategory(Request $request){
-
-        $category = Category::create(['name' => $request->name]);
-
+    public function createCategory(Request $request)
+    {
+        // Check if 'name' is missing or empty
+        if (!$request->has('name') || empty($request->name)) {
+            return response()->json([
+                "message" => "fail"
+            ], 400);
+        }
+    
+        // Create the category
+        $category = Category::create([
+            'name' => $request->name
+        ]);
+    
+        // Return success response
         return response()->json([
-        "message" => "Category created successfully",
-        "category" => $category
+            "message" => "Category created successfully",
+            "category" => $category
         ], 201);
-    }   
+    }
+     
 
             // --- Get /api/categories/{categoryId}
     public function getCategory($categoryId){
