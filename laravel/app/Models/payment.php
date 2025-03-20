@@ -15,11 +15,11 @@ class payment extends Model
     protected $fillable = ['customer_id', 'order_id', 'payment_date', 'payment_method', 'total_payment'];
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(customer::class);
     }
     public function order()
     {
-        return $this->belongsTo(Order::class);
+        return $this->belongsTo(order::class);
     }
 
 

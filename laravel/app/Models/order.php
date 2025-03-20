@@ -15,18 +15,18 @@ class order extends Model
     protected $fillable = ['customer_id', 'total_price','order_date'];
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(customer::class);
     }
-    public function orderProduct()
+    public function order_product()
     {
         return $this->hasMany(OrderProduct::class);
     }
     public function payment()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasMany(payment::class);
     }
 
-    protected $table = 'order';
+    protected $table = 'orders';
     public function orderDate(): Attribute
     {
         return Attribute::make(

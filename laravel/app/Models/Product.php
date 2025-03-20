@@ -19,14 +19,15 @@ class Product extends Model
     }
     public function cart()
     {
-        return $this->hasMany(Cart::class);
-    }
-    public function orderProduct()
-    {
-        return $this->hasMany(OrderProduct::class);
+        return $this->hasMany(cart::class);
     }
     public function wishlist()
     {
-        return $this->hasMany(Wishlist::class);
+        return $this->hasMany(wishlist::class);
     }
+    public function orderProducts() 
+{
+    return $this->hasMany(OrderProduct::class);
+}
+
 }

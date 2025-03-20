@@ -11,19 +11,19 @@ class customer extends Model
 
     protected $fillable = ['name', 'email', 'address', 'phone'];
     public function cart(){
-        return $this-> hasMany(Cart::class);
+        return $this-> hasMany(cart::class);
     }
     public function wishlist(){
-        return $this-> hasMany(Wishlist::class);
+        return $this-> hasMany(wishlist::class);
     }
     public function payment(){
-        return $this-> hasMany(Payment::class);
+        return $this-> hasMany(payment::class);
     }
     public function order(){
-        return $this-> hasMany(Order::class);
+        return $this-> hasMany(order::class);
     }
-    public function product()
+    public function products()
     {
-        return $this->hasManyThrough(Product::class, Cart::class, 'customer_id', 'id', 'id', 'product_id');
+        return $this->hasManyThrough(Product::class, cart::class, 'customer_id', 'id', 'id', 'product_id');
     }
 }

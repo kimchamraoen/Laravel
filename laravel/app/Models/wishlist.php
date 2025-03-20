@@ -12,9 +12,9 @@ class wishlist extends Model
     protected $fillable = ['customer_id', 'product_id'];
     public function customer()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(customer::class);
     }
-    public function product()
+    public function products()
     {
         return $this->belongsTo(Product::class);
     }
