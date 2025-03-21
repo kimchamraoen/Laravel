@@ -22,7 +22,7 @@ return new class extends Migration
 
             # Foreign Key
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('customer_id')->references('id')->on('customer')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 
