@@ -14,11 +14,11 @@ class OrderProduct extends Model
     // Define the relationship with the Order model
     public function order()
     {
-        return $this->belongsTo(order::class);
+        return $this->belongsTo(Order::class);
     }
 
     // Define the relationship with the Product model
-    public function products()
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }

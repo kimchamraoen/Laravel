@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Providers;
-use App\Models\order;
+use App\Models\Order;
 use App\Observers\ModelActivityObserver;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,6 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        order::observe(ModelActivityObserver::class);
+        Order::observe(ModelActivityObserver::class);
     }
 }

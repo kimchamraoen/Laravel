@@ -7,23 +7,25 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-class order extends Model
+class Order extends Model
 {
     use HasFactory;
+    
 
     protected $fillable = ['customer_id', 'total_price','order_date'];
     public function customer()
     {
-        return $this->belongsTo(customer::class);
+        return $this->belongsTo(Customer::class);
     }
-    public function order_product()
+    public function order_products()
     {
         return $this->hasMany(OrderProduct::class);
     }
-    public function payment()
+    public function payments()
     {
-        return $this->hasMany(payment::class);
+        return $this->hasMany(Payment::class);
     }
 
     protected $table = 'orders';

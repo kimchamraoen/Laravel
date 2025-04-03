@@ -8,18 +8,18 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class payment extends Model
+class Payment extends Model
 {
     use HasFactory;
 
     protected $fillable = ['customer_id', 'order_id', 'payment_date', 'payment_method', 'total_payment'];
     public function customer()
     {
-        return $this->belongsTo(customer::class);
+        return $this->belongsTo(Customer::class);
     }
     public function order()
     {
-        return $this->belongsTo(order::class);
+        return $this->belongsTo(Order::class);
     }
 
 

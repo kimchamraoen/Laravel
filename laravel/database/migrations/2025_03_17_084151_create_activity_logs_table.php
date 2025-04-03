@@ -13,19 +13,20 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('model'); //model name
-            $table->string('action'); //CRUD
-            $table->unsignedBigInteger('model_id')->nullable(); //recode id
-            $table->json(' changes')->nullable(); //stores old and new data
+            $table->string('model');
+            $table->integer('model_id');
+            $table->string('action');
+            $table->json('changes')->nullable();  // Add this line if it is missing
+            $table->timestamp('updated_at')->nullable();
             $table->timestamp('created_at')->useCurrent();
-        });
+        });        
     }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
-    {
-        Schema::dropIfExists('activity_logs');
-    }
+{
+    Schema::dropIfExists('activity_logs');
+}
 };

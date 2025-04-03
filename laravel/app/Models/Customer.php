@@ -11,15 +11,15 @@ class Customer extends Model
 
     protected $fillable = ['name', 'email', 'address', 'phone'];
 
-    public function cart(){
+    public function carts(){
         return $this->hasMany(Cart::class);
     }
 
-    public function wishlist(){
+    public function wishlists(){
         return $this->hasMany(Wishlist::class);
     }
 
-    public function payment(){
+    public function payments(){
         return $this->hasMany(Payment::class);
     }
 

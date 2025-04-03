@@ -17,13 +17,13 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
-    public function cart()
+    public function carts()
     {
-        return $this->hasMany(cart::class);
+        return $this->hasMany(Cart::class);
     }
-    public function wishlist()
+    public function wishlists()
     {
-        return $this->hasMany(wishlist::class);
+        return $this->hasMany(Wishlist::class);
     }
     public function orderProducts() 
 {
