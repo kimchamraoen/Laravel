@@ -11,7 +11,11 @@ class CategoryController extends Controller
       public function getCategories(){
         $categories = Category::all(); // Fetch only the categories without any relations
     
-        return response()->json($categories);
+        // return response()->json($categories);
+        return response()->json([
+            'message' => 'success',
+            'data' => $categories
+        ]);
     }
     // --- Post /api/categories
     public function createCategory(Request $request)
