@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UploadController;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/categories', [CategoryController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -17,4 +21,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::get('/upload_file', function () {
+    return view('upload_file');
+   });
+Route::post('/upload', [UploadController::class, 'upload'])->name('upload');
+
+// require __DIR__.'/auth.php';
