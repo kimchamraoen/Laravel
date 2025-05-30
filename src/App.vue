@@ -6,13 +6,12 @@
 
     <h3>Completed Tasks:</h3>
     <TodoLists status="completed" />
-    <div class="pending-tasks">
-      <span
-        >You have <span class="pending-num"> {{ nbOfTodo }} </span> tasks
-        pending.</span
-      >
-      <button class="clear-button">Clear All</button>
-    </div>
+  <div class="pending-tasks">
+    <span>
+      You have <span class="pending-num">{{ nbOfTodo }}</span> tasks pending.
+    </span>
+    <button v-on="{ click: clearAllTodos }">Clear All</button>
+  </div>
   </div>
 </template>
 <script>
@@ -44,11 +43,12 @@ export default {
     },
     clearAllTodos() {
       console.log("clear");
-      this.store.clearAll();
+      this.store.clearAll();  
     },
   },
 };
 </script>
 <style>
 @import "https://unicons.iconscout.com/release/v4.0.0/css/line.css";
+
 </style>
