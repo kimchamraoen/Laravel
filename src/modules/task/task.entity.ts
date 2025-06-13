@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+//defind the database table structure for tasks
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
 import { User } from '../user/user.entity';
 

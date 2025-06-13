@@ -1,6 +1,9 @@
 /* eslint-disable prettier/prettier */
- 
- 
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -9,53 +12,47 @@ import {
   Param,
   Patch,
   Post,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
-import { User } from '../user/user.entity';
+import { CreateTaskDto } from './dto/create-task.dto';
 
 @Controller('tasks')
 export class TaskController {
   constructor(private readonly taskService: TaskService) {}
 
+  // @Post()
+  // createTask(@Body() body: any) {
+  //   return this.taskService.create(body);
+  // }
+
   @Post()
-  async createTask(@Body() body: unknown) {
-    const typedBody = body as {
-      user: User;
-      name: string;
-      description?: string;
-      completedAt?: string | null;
-    };
-
-    const user = typedBody.user;
-    const taskData = {
-      name: typedBody.name,
-      description: typedBody.description,
-      completedAt: typedBody.completedAt
-        ? new Date(typedBody.completedAt)
-        : undefined,
-    };
-
-    return await this.taskService.createTask(taskData, user);
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  create(@Body() createTaskDto: CreateTaskDto) {
+    return this.taskService.create(createTaskDto);
   }
 
   @Get()
   getAllTasks() {
-    return this.taskService.getAllTasks();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    return this.taskService.findAll();
   }
 
-  @Get('/:id')
-  getTask(@Param('id') id: string) {
-    return this.taskService.getTask(Number(id));
+  @Get(':id')
+  getTaskById(@Param('id') id: number) {
+    return this.taskService.findOne(+id);
   }
 
-  @Patch('/:id')
+  @Patch(':id')
   updateTask(@Param('id') id: string, @Body() body: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return this.taskService.updateTask(Number(id), body);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return this.taskService.update(+id, body);
   }
 
-  @Delete('/:id')
+  @Delete(':id')
   deleteTask(@Param('id') id: string) {
-    return this.taskService.deleteTask(Number(id));
+    return this.taskService.remove(+id);
+    // return this.taskService.remove(+id);
   }
 }

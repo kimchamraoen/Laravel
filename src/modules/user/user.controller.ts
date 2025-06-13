@@ -1,4 +1,7 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable prettier/prettier */
 import {
   Get,
   Param,
@@ -7,33 +10,48 @@ import {
   Body,
   Patch,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './user.service';
-import { createUserDto } from './dto/create-user.dto';
+import { User } from './user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) {}
 
-  @Get('/:username')
-  getUser(@Param('username') username: string) {
-    return this.userService.getUser(username);
+  @Get() 
+  getAllUsers() {
+    return this.userService.findAll();
   }
 
-  @Post('/')
-  createUser(@Body() body: createUserDto) {
-    return this.userService.createUser(body);
+  @Get(':id')
+  getUserById(@Param('id') id: string) {
+    return this.userService.findOne(+id);
   }
 
-  @Patch('/:username')
+  // @Post()
+  // createUser(@Body() body: Partial<User>) {
+  //   return this.userService.create(body);
+  // }
+
+  @Post()
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
+  }
+
+  @Patch(':id')
   updateUser(
-    @Body() body: { username: string; email: string; password: string },
-  ) {
-    return this.userService.updateUser(body);
+    @Param('id') id: string,
+    @Body() body: Partial<User>,
+  ) { 
+    return this.userService.update(+id, body);
   }
 
-  @Delete('/users/:username')
-  deleteUser(@Param('username') username: string) {
-    return this.userService.deleteUser(username);
+  @Delete(':id')
+  deleteUser(@Param('id') id: string) {
+    return this.userService.remove(+id);
   }
 }

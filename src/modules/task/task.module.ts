@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+//register everything related into tasks(controller, service, entity) into one module
 import { Module } from '@nestjs/common';
 import { TaskController } from './task.controller';
 import { TaskService } from './task.service';
