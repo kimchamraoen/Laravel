@@ -1,9 +1,11 @@
+/* eslint-disable prettier/prettier */
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
-import { BookModule } from './modules/book/book.module';
+import { StudentModule } from './modules/student/student.module';
+import { AttendanceModule } from './modules/attendance/attendance.module';
 
 @Module({
   imports: [
@@ -12,7 +14,9 @@ import { BookModule } from './modules/book/book.module';
       playground: true,
       typePaths: ['./**/*.graphql'],
     }),
-    BookModule,
+    StudentModule,
+    AttendanceModule
+
   ],
   controllers: [AppController],
   providers: [AppService],

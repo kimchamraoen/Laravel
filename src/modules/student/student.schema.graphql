@@ -1,0 +1,17 @@
+type Student {
+  id: Int!
+  name: String!
+  idCard: String!
+  className: String!
+}
+
+type Query {
+  students: [Student!]!
+  studentsByClass(className: String!): [Student!]!
+}
+
+type Mutation {
+  enrollStudent(id: Int!, className: String!): Student!
+  removeStudentFromClass(id: Int!): Boolean!
+  updateStudent(id: Int!, name: String!, idCard: String!, className: String!): Student!
+}
